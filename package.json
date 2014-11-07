@@ -1,0 +1,12 @@
+{
+  "name": "Riot-Challenge",
+  "version": "0.0.0",
+  "description": "Programming Challenge for Riot Games QA Tech ",
+  "main": "server.js",
+  "author": "Thomas Huang",
+  "dependencies": {
+    "ejs": "~0.8.5",
+    "express": "~4.6.1",
+    "morgan": "~1.1.1"
+  }
+}
