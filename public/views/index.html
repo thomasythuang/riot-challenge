@@ -8,7 +8,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title>Riot API Test</title>
+	<title>LoL Spell Analysis</title>
 
 	<!-- Angular, Fonts, and Icons -->
 	<script src="/resources/angular.min.js"></script>
@@ -29,13 +29,31 @@
 		<div ng-show="errMsg">
 			<p>{{errMsg}}</p>
 		</div>
-		<div ng-show="done" class="">
+		<div ng-show="done">
+			<table class="data-table">
+				<tr class="labels">
+					<td>Champion</td>
+					<td>Spell</td>
+					<td>Mana/Energy Cost</td>
+					<td>Cooldown</td>
+					<td>Effect</td>
+				</tr>
+				<tr ng-repeat="spell in spells" ng-click="test(spell)">
+					<td>{{spell.champ}}</td>
+					<td>{{spell.name}}</td>
+					<td>{{spell.costBurn}}</td>
+					<td>{{spell.cooldownBurn}}</td>
+					<td>{{spell.effectVal}} {{spell.ratios}} {{spell.eff}}</td>
+				</tr>
+			</table>
+
+			<!-- 
 			<div ng-repeat="champ in champions | orderBy:'name'" class="col-lg-2 champ">
 				<strong>{{champ.name}}</strong>
 				<div ng-repeat="spell in champ.spells">
 					{{spell.name}}
 				</div>
-			</div>
+			</div> -->
 		</div>
 		
 	</div>
