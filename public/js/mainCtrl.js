@@ -22,6 +22,7 @@ app.controller('mainController', function($scope, $http, Static){
 
 	$scope.onLoad();
 
+	// Load spell data from Riot API and analyze 
 	$scope.getData = function(){
 		start();
 		// Load all champions
@@ -40,6 +41,7 @@ app.controller('mainController', function($scope, $http, Static){
 			});
 	};
 
+	// For each champion, load each spell into an array and analyze it
 	function processData(){
 		for (var i=0; i<$scope.champions.length; i++){
 			for (var j=0; j<$scope.champions[i].spells.length; j++){
@@ -54,6 +56,7 @@ app.controller('mainController', function($scope, $http, Static){
 		end();
 	}
 
+	// Assign the AD/AP/etc ratios of spells
 	function ratios(spell){
 		spell.ad = 0;
 		spell.ap = 0;
@@ -78,6 +81,7 @@ app.controller('mainController', function($scope, $http, Static){
 		spell.ratios = result;
 	}
 	
+	// Assign the correct type of ratio to a spell
 	function parseRatio(str, coeff, spell){
 		switch(str){
 			case "spelldamage":
@@ -97,6 +101,8 @@ app.controller('mainController', function($scope, $http, Static){
 		}
 	} 
 
+	// Assign a spell its effects based on given effect labels
+	// Categories are damage, heal, shield, and crowd control
 	function effects(spell){
 		var dmgLabels = ["Damage" , "Damage ", "Bonus Damage", "Base Damage", "Current Health %", "Bonus Magic Damage", "Magic Damage", "Bite Damage", "Percent Maximum Health Damage", "Minimum Damage", "Primary Damage", "True Damage", "Total Damage", "Explosion Damage", "Damage per Second", "Damage Per Second", "Damage per Sec", "Damage dealt per second", "Base Damage per Second", "Max Damage", "Max Health Damage", "Venomous Bite Damage", "Collision Damage", "Maximum Damage", "Passive Damage", "Mark Detonation Damage", "Beam Damage"];
 		var healLabels = ["Heal", "Base Heal", "Health Restored", "Bonus Health"];
@@ -110,7 +116,7 @@ app.controller('mainController', function($scope, $http, Static){
 		for (var j=0; j < allLabels.length; j++){
 			for (var i=0; i < allLabels[j].length; i++){
 				index = label.indexOf(allLabels[j][i]);
-				if (index > -1){
+				if (index > -1 && norm(spell)){
 					spell.eff.push({
 						label: label[index],
 						valBurn: spell.effectBurn[index+1],
@@ -119,47 +125,74 @@ app.controller('mainController', function($scope, $http, Static){
 					});
 					if (j < 3)
 						break;
+				}else if (index > -1){
+					spell.eff.push({
+						label: label[index],
+						valBurn: spell.effectBurn[index+2],
+						val: spell.effect[index+2],
+						type: j,
+					});
+					if (j < 3)
+						break;
 				}
 			}
 		}
-
-		/*
-		if (index > -1){
-			spell.effectVal[0] = spell.effectBurn[index+1];
-		}else{
-			spell.effectVal[0] = spell.effectBurn[1];
-		} */
 	}
 
+	// Special case spells where effect values are indexed +2 more than
+	// the effect labels instead of +1
+	function norm(spell){
+		var spells = ["Wall of Pain",];
+
+		return (spells.indexOf(spell.name) < 0);
+	}
+
+	// Calculate the efficiency rating of a spell
 	function evaluate(spell){
-		var rating = 0;
+		if (spell.name == "Wild Cards")
+			spell.range = 1450; // API provides wrong range
+
+		var base = 0;
 		var multiplier = 0;
 		var val = 0;
 		var range = spell.range[0];
 		var cd;
+		var cost;
 
 		// Handle effects
 		for (var i=0; i<spell.eff.length; i++){
 			multiplier = getMultiplier(spell.eff[i].type);
 			val = spell.eff[i].val;
 			if (val)
-				rating += val[val.length-1] * multiplier;
+				base += val[val.length-1] * multiplier;
 		}
 
-		var rangeMod = 1 
-		if (range > 3500)
-			range = range / 5;
-		if (!isNaN(spell.range[0]))
-			rangeMod += Math.log(1 + (spell.range[0] / 10000));
+		spell.rangeMod = 1 
+		if (range > 2000)
+			range = 2000;
+		if (!isNaN(range)){
+			spell.rangeMod += Math.log(1 + (range / 2000));
+			spell.rangeMod *= 1.5
+		}
 
 		cd = spell.cooldown;
 		cd = cd[cd.length-1];
 		if (cd < 2.5)
 			cd += 20;
-		var cdMod = 60/cd;
+		spell.cdMod = 3 / Math.log(cd);
 
-		spell.yo = cd;
-		spell.rating = rating * rangeMod * cdMod;
+		cost = spell.cost;
+		cost = cost[cost.length-1];
+		if (cost < 20){
+			spell.costMod = 1;
+		}else if(spell.costType == "Energy"){
+			spell.costMod = 3.5 / Math.log(cost);
+		}else{
+			spell.costMod = 3.5 / Math.log(cost);
+		}
+
+		spell.base = base;
+		spell.rating = spell.base * spell.rangeMod * spell.cdMod * spell.costMod;
 	}
 
 	function getMultiplier(n){
@@ -168,13 +201,13 @@ app.controller('mainController', function($scope, $http, Static){
 				return 1;
 				break;
 			case 1: 
-				return 1;
+				return 1.5;
 				break;
 			case 2:
-				return 1;
+				return 0.8;
 				break;
 			case 3: 
-				return 0.5;
+				return 1;
 				break;
 			default:
 				return 0;

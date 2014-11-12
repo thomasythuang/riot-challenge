@@ -20,7 +20,7 @@
 	<h1>League of Legends Spell Analysis</h1>
 	<p>Current Patch: {{patch}}</p>
 	
-	<button ng-click="getData()">Get Info!</button>
+	<button ng-click="getData()">Analyze!</button>
 
 	<div>
 		<div ng-show="inProgress">
@@ -37,7 +37,10 @@
 					<td>Mana/Energy Cost</td>
 					<td>Cooldown</td>
 					<td>Range</td>
-					<td>Yo</td>
+					<td>Base</td>
+					<td>Cost Mod</td>
+					<td>CD Mod</td>
+					<td>Range Mod</td>
 					<td>Effect</td>
 					<td>Rating</td>
 				</tr>
@@ -47,7 +50,10 @@
 					<td>{{spell.costBurn}}</td>
 					<td>{{spell.cooldownBurn}}</td> 
 					<td>{{spell.range[0]}}</td>
-					<td>{{spell.yo.toString() | limitTo:6}}</td>
+					<td>{{spell.base}}</td>
+					<td>{{spell.costMod.toString() | limitTo:4}}</td>
+					<td>{{spell.cdMod.toString() | limitTo:4}}</td>
+					<td>{{spell.rangeMod.toString() | limitTo:4}}</td>
 					<td>| <span ng-repeat="effect in spell.eff"> {{effect.valBurn}} {{effect.label}} |</span></td>
 					<td>{{spell.rating.toString() | limitTo:8}}</td>
 				</tr>
