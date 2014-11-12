@@ -5,6 +5,7 @@ var app = angular.module('mainController', []);
 app.controller('mainController', function($scope, $http, Static){
 	// Default region = NA (NA > EU 5ever amirite)
 	$scope.region="na";
+	$scope.showCount = 100;
 	$scope.champions = [];
 	$scope.spells = [];
 	$scope.ap = 200;
@@ -153,8 +154,11 @@ app.controller('mainController', function($scope, $http, Static){
 
 	// Calculate the efficiency rating of a spell
 	function evaluate(spell){
+		// API provides some wrong ranges
 		if (spell.name == "Wild Cards")
-			spell.range = 1450; // API provides wrong range
+			spell.range = 1450;
+		if (spell.name == "Decimating Smash")
+			spell.range = 800;
 
 		spell.base = 0;
 		var multiplier = 0;
@@ -176,12 +180,12 @@ app.controller('mainController', function($scope, $http, Static){
 
 		// Calculate score modifier for range
 		spell.rangeMod = 1 
-		if (range > 2000)
-			range = 2000;
+		if (range > 3000)
+			range = 3000;
 		if (!isNaN(range)){
-			spell.rangeMod += Math.log(1 + (range / 2000));
-			spell.rangeMod *= 1.5
+			spell.rangeMod += 1.5 * Math.log(1 + (range / 2000));
 		}
+
 
 		// Calculate score modifier for cooldown
 		cd = spell.cooldown;

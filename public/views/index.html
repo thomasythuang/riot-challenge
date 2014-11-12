@@ -25,13 +25,24 @@
 	  <input type="range" min="0" max="400" ng-model="ad"> 
   	<span class="label label-primary">AP: {{ap}}</span>
 	  <input type="range" min="0" max="800" ng-model="ap">
+	  Show up to:
+	  <select class="form-control" ng-model="showCount">
+			<option value="50">50</option>
+			<option value="100">100</option>
+			<option value="150">150</option>
+		</select>
+		<!-- Button trigger modal -->
+		<button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#myModal">
+		  How it works
+		</button>
 	</div>
 	
-	<button type="button" class="btn btn-success" ng-click="getData()">Analyze!</button>
+	<button type="button" class="btn btn-success btn-lg main-btn" ng-click="getData()">Analyze!</button>
 
 	<div>
 		<div ng-show="inProgress">
-			<span class="fa fa-spinner fa-spin"></span>
+			<p>Calculating...</p>
+			<span class="fa fa-spinner fa-spin fa-3x"></span>
 		</div>
 		<div ng-show="errMsg">
 			<p>{{errMsg}}</p>
@@ -41,32 +52,64 @@
 				<tr class="labels">
 					<td>Champion</td>
 					<td>Spell</td>
+					<td>Effect</td>
 					<td>Mana/Energy Cost</td>
 					<td>Cooldown</td>
 					<td>Range</td>
-					<td>Base</td>
-					<td>Cost Mod</td>
-					<td>CD Mod</td>
-					<td>Range Mod</td>
-					<td>Effect</td>
+					<td class="base">Base *</td>
+					<td>Cost Mod *</td>
+					<td>CD Mod *</td>
+					<td>Range Mod =</td>
 					<td>Rating</td>
 				</tr>
-				<tr ng-repeat="spell in spells | orderBy: '-rating' | limitTo:100" ng-click="test(spell)">
+				<tr ng-repeat="spell in spells | orderBy: '-rating' | limitTo:showCount" ng-click="test(spell)">
 					<td>{{spell.champ}}</td>
 					<td><img class="icon" ng-src="/img/{{spell.image.full}}"> {{spell.name}}</td>
+					<td><span ng-repeat="effect in spell.eff">{{effect.valBurn}} {{effect.label}} | </span>{{spell.ratios}}</td>
 					<td>{{spell.costBurn}}</td>
 					<td>{{spell.cooldownBurn}}</td> 
 					<td>{{spell.range[0]}}</td>
-					<td>{{spell.base | limitTo: 6}}</td>
+					<td class="base">{{spell.base | limitTo: 6}}</td>
 					<td>{{spell.costMod.toString() | limitTo:4}}</td>
 					<td>{{spell.cdMod.toString() | limitTo:4}}</td>
 					<td>{{spell.rangeMod.toString() | limitTo:4}}</td>
-					<td><span ng-repeat="effect in spell.eff">{{effect.valBurn}} {{effect.label}} | </span>{{spell.ratios}}</td>
 					<td class="rating">{{spell.rating.toString() | limitTo:8}}</td>
 				</tr>
 			</table>
 		</div>
 		
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	        <h4 class="modal-title" id="myModalLabel">About This Program</h4>
+	      </div>
+	      <div class="modal-body">
+	      	<p>
+	        	Hello! My name is Thomas Huang and I've been a League summoner since Season 3. This is my program to calculate the most efficient spell in League of Legends.
+	        </p>
+	        <p>
+	        	Each spell's efficiency score is based on the following parameters: Base Values, AD/AP Ratios and given AD/AP Values, Spell Costs, Cooldown, and Range. 
+	        </p>
+	        <p>
+	        	With the default values of AD=200 and AP=200, the most efficient spell in League of Legends is Katarina's ultimate due to its extremely high AP and bonus AD ratios. With 100 AD and 0 AP (the rough equivalent of no items), the most efficient spell is Nunu's Consume because of its very high base damages (albeit only on minions). 
+	        </p>
+	        <p>
+	        	Other very efficient spells include Mordekaiser's Mace of Spades because of its non-mana cost, low cooldown and high base damages/ratios and also Jinx's Zap! due to its high AD ratio, long range, and 70% slow at rank 5.
+	        </p>
+	        <p>
+	        	If you have any questions or comments, I would love to talk more, so <a href="mailto:thomashuang2016@u.northwestern.edu" target="_blank">contact me!</a> All data in this program in this program is taken from <a href="https://developer.riotgames.com/" target="_blank">the Riot Games API</a>, and all spell icons were downloaded from <a href="http://ec2-174-129-110-117.compute-1.amazonaws.com/tool/" target="_blank">DDragon</a>. Thank you for your time and consideration!
+	        </p>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
 	</div>
 
 <!-- Resources -->

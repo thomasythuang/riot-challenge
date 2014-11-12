@@ -21,8 +21,11 @@ body{
 	font-size: 18px;
 }
 
+.main-btn{
+	margin: 10px 0 20px 0 !important;
+}
+
 .data{
-	margin-top: 10px;
 	display: inline-block;
 }
 
@@ -39,16 +42,23 @@ body{
 	width: 25em !important;
 	display: inline-block !important;
 	margin-right: 1em;
+	vertical-align: middle !important;
 }
 .sliders span{
 	font-size: 1em !important;
-	vertical-align: top !important;
+	vertical-align: middle !important;
+}
+.sliders select{
+	width: 100px;
+	vertical-align: middle !important;
+	display: inline-block;
+	margin-right: 1em;
 }
 
-/*
-.champ{
-	border: 1px solid black;
+.base{
+	border-left: 1px solid #ddd;
+}
+
+.modal-body{
 	text-align: left;
-	padding-top: 5px;
-	padding-bottom: 5px;
-} */
+}
