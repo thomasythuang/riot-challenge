@@ -1,8 +1,7 @@
-riot-challenge
+Riot QA Tech Internship Challenge
 ==============
 
-Riot QA Tech Internship Challenge
-
+http://topspells.herokuapp.com
 
 Hello! My name is Thomas Huang and I've been a League summoner since Season 3. This is my program to calculate the most efficient spell in League of Legends.
 
