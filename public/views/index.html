@@ -34,18 +34,22 @@
 				<tr class="labels">
 					<td>Champion</td>
 					<td>Spell</td>
-					<!-- <td>Mana/Energy Cost</td>
-					<td>Cooldown</td> -->
+					<td>Mana/Energy Cost</td>
+					<td>Cooldown</td>
 					<td>Range</td>
+					<td>Yo</td>
 					<td>Effect</td>
+					<td>Rating</td>
 				</tr>
-				<tr ng-repeat="spell in spells" ng-click="test(spell)">
+				<tr ng-repeat="spell in spells | orderBy: '-rating'" ng-click="test(spell)">
 					<td>{{spell.champ}}</td>
 					<td>{{spell.name}}</td>
-					<!-- <td>{{spell.costBurn}}</td>
-					<td>{{spell.cooldownBurn}}</td> -->
+					<td>{{spell.costBurn}}</td>
+					<td>{{spell.cooldownBurn}}</td> 
 					<td>{{spell.range[0]}}</td>
-					<td>{{spell.effectVal[0]}} {{spell.ratios}} {{spell.eff[0]}}</td>
+					<td>{{spell.yo.toString() | limitTo:6}}</td>
+					<td>| <span ng-repeat="effect in spell.eff"> {{effect.valBurn}} {{effect.label}} |</span></td>
+					<td>{{spell.rating.toString() | limitTo:8}}</td>
 				</tr>
 			</table>
 

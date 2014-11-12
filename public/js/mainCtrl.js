@@ -46,6 +46,7 @@ app.controller('mainController', function($scope, $http, Static){
 				var spell = $scope.champions[i].spells[j];
 				ratios(spell);
 				effects(spell);
+				evaluate(spell);
 				spell.champ = $scope.champions[i].name;
 				$scope.spells.push(spell);
 			}
@@ -97,24 +98,86 @@ app.controller('mainController', function($scope, $http, Static){
 	} 
 
 	function effects(spell){
-		var labels = ["Damage" , "Damage ", "Bonus Damage", "Base Damage", "Bonus Magic Damage", "Explosion Damage", "Damage per Second", "Damage Per Second", "Damage per Sec", "Damage dealt per second", "Base Damage per Second", "Max Damage", "Max Health Damage", "Heal", "Base Heal", "Health Restored", "Bonus Health", "Collision Damage", "Maximum Damage", "Passive Damage", "Mark Detonation Damage", "Beam Damage", "Shield Absorption", "Damage Absorption", "Shield Health", "Shield Health "];
+		var dmgLabels = ["Damage" , "Damage ", "Bonus Damage", "Base Damage", "Current Health %", "Bonus Magic Damage", "Magic Damage", "Bite Damage", "Percent Maximum Health Damage", "Minimum Damage", "Primary Damage", "True Damage", "Total Damage", "Explosion Damage", "Damage per Second", "Damage Per Second", "Damage per Sec", "Damage dealt per second", "Base Damage per Second", "Max Damage", "Max Health Damage", "Venomous Bite Damage", "Collision Damage", "Maximum Damage", "Passive Damage", "Mark Detonation Damage", "Beam Damage"];
+		var healLabels = ["Heal", "Base Heal", "Health Restored", "Bonus Health"];
+		var shieldLabels = ["Shield Absorption", "Damage Absorption", "Shield Amount", "Shield Health", "Shield Health "];
+		var ccLabels = ["Attack Damage Reduction", "Movement Speed Slow", "Movement Speed Reduction", "Slow", "Slow Amount"];
+		var allLabels = [dmgLabels, healLabels, shieldLabels, ccLabels];
 		var label = spell.leveltip.label;
 		var index = -1;
 		spell.eff = [];
-		spell.effectVal = [];
 		
-		for (var i=0; i < labels.length; i++){
-			index = label.indexOf(labels[i]);
-			if (index > -1){
-				spell.eff[0] = label[index];
-				break;
+		for (var j=0; j < allLabels.length; j++){
+			for (var i=0; i < allLabels[j].length; i++){
+				index = label.indexOf(allLabels[j][i]);
+				if (index > -1){
+					spell.eff.push({
+						label: label[index],
+						valBurn: spell.effectBurn[index+1],
+						val: spell.effect[index+1],
+						type: j,
+					});
+					if (j < 3)
+						break;
+				}
 			}
 		}
 
+		/*
 		if (index > -1){
 			spell.effectVal[0] = spell.effectBurn[index+1];
 		}else{
 			spell.effectVal[0] = spell.effectBurn[1];
+		} */
+	}
+
+	function evaluate(spell){
+		var rating = 0;
+		var multiplier = 0;
+		var val = 0;
+		var range = spell.range[0];
+		var cd;
+
+		// Handle effects
+		for (var i=0; i<spell.eff.length; i++){
+			multiplier = getMultiplier(spell.eff[i].type);
+			val = spell.eff[i].val;
+			if (val)
+				rating += val[val.length-1] * multiplier;
+		}
+
+		var rangeMod = 1 
+		if (range > 3500)
+			range = range / 5;
+		if (!isNaN(spell.range[0]))
+			rangeMod += Math.log(1 + (spell.range[0] / 10000));
+
+		cd = spell.cooldown;
+		cd = cd[cd.length-1];
+		if (cd < 2.5)
+			cd += 20;
+		var cdMod = 60/cd;
+
+		spell.yo = cd;
+		spell.rating = rating * rangeMod * cdMod;
+	}
+
+	function getMultiplier(n){
+		switch (n){
+			case 0:
+				return 1;
+				break;
+			case 1: 
+				return 1;
+				break;
+			case 2:
+				return 1;
+				break;
+			case 3: 
+				return 0.5;
+				break;
+			default:
+				return 0;
 		}
 	}
 
