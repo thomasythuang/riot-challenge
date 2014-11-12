@@ -100,19 +100,21 @@ app.controller('mainController', function($scope, $http, Static){
 		var labels = ["Damage" , "Damage ", "Bonus Damage", "Base Damage", "Bonus Magic Damage", "Explosion Damage", "Damage per Second", "Damage Per Second", "Damage per Sec", "Damage dealt per second", "Base Damage per Second", "Max Damage", "Max Health Damage", "Heal", "Base Heal", "Health Restored", "Bonus Health", "Collision Damage", "Maximum Damage", "Passive Damage", "Mark Detonation Damage", "Beam Damage", "Shield Absorption", "Damage Absorption", "Shield Health", "Shield Health "];
 		var label = spell.leveltip.label;
 		var index = -1;
+		spell.eff = [];
+		spell.effectVal = [];
 		
 		for (var i=0; i < labels.length; i++){
 			index = label.indexOf(labels[i]);
 			if (index > -1){
-				spell.eff = label[index];
+				spell.eff[0] = label[index];
 				break;
 			}
 		}
 
 		if (index > -1){
-			spell.effectVal = spell.effectBurn[index+1];
+			spell.effectVal[0] = spell.effectBurn[index+1];
 		}else{
-			spell.effectVal = spell.effectBurn[1];
+			spell.effectVal[0] = spell.effectBurn[1];
 		}
 	}
 

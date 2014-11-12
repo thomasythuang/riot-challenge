@@ -34,16 +34,18 @@
 				<tr class="labels">
 					<td>Champion</td>
 					<td>Spell</td>
-					<td>Mana/Energy Cost</td>
-					<td>Cooldown</td>
+					<!-- <td>Mana/Energy Cost</td>
+					<td>Cooldown</td> -->
+					<td>Range</td>
 					<td>Effect</td>
 				</tr>
 				<tr ng-repeat="spell in spells" ng-click="test(spell)">
 					<td>{{spell.champ}}</td>
 					<td>{{spell.name}}</td>
-					<td>{{spell.costBurn}}</td>
-					<td>{{spell.cooldownBurn}}</td>
-					<td>{{spell.effectVal}} {{spell.ratios}} {{spell.eff}}</td>
+					<!-- <td>{{spell.costBurn}}</td>
+					<td>{{spell.cooldownBurn}}</td> -->
+					<td>{{spell.range[0]}}</td>
+					<td>{{spell.effectVal[0]}} {{spell.ratios}} {{spell.eff[0]}}</td>
 				</tr>
 			</table>
 
@@ -67,7 +69,7 @@
 
 <!-- Imported Resources -->
 <script src="/resources/jquery-2.1.1.min.js"></script>
-<!-- <script src="/resources/bootstrap.min.js"></script> -->
+<script src="/resources/bootstrap.min.js"></script>
 
 <!-- Angular Custom Components -->
 <script src="/js/coreModule.js"></script>
