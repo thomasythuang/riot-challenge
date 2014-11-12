@@ -7,6 +7,8 @@ app.controller('mainController', function($scope, $http, Static){
 	$scope.region="na";
 	$scope.champions = [];
 	$scope.spells = [];
+	$scope.ap = 200;
+	$scope.ad = 200;
 
 	// Init function
 	$scope.onLoad = function(){
@@ -103,6 +105,8 @@ app.controller('mainController', function($scope, $http, Static){
 
 	// Assign a spell its effects based on given effect labels
 	// Categories are damage, heal, shield, and crowd control
+	// It was difficult to properly assign every single effect for every spell because effects were index in different patterns for various spells
+	// The most common pattern was the effect label (in spell.leveltip.label) having index i, and the effect value (in spell.effect or spell.effectBurn) having index i+1
 	function effects(spell){
 		var dmgLabels = ["Damage" , "Damage ", "Bonus Damage", "Base Damage", "Current Health %", "Bonus Magic Damage", "Magic Damage", "Bite Damage", "Percent Maximum Health Damage", "Minimum Damage", "Primary Damage", "True Damage", "Total Damage", "Explosion Damage", "Damage per Second", "Damage Per Second", "Damage per Sec", "Damage dealt per second", "Base Damage per Second", "Max Damage", "Max Health Damage", "Venomous Bite Damage", "Collision Damage", "Maximum Damage", "Passive Damage", "Mark Detonation Damage", "Beam Damage"];
 		var healLabels = ["Heal", "Base Heal", "Health Restored", "Bonus Health"];
@@ -142,7 +146,7 @@ app.controller('mainController', function($scope, $http, Static){
 	// Special case spells where effect values are indexed +2 more than
 	// the effect labels instead of +1
 	function norm(spell){
-		var spells = ["Wall of Pain",];
+		var spells = ["Wall of Pain", "Permafrost",];
 
 		return (spells.indexOf(spell.name) < 0);
 	}
@@ -152,21 +156,25 @@ app.controller('mainController', function($scope, $http, Static){
 		if (spell.name == "Wild Cards")
 			spell.range = 1450; // API provides wrong range
 
-		var base = 0;
+		spell.base = 0;
 		var multiplier = 0;
 		var val = 0;
 		var range = spell.range[0];
 		var cd;
 		var cost;
 
-		// Handle effects
+		// Get base values for effects
 		for (var i=0; i<spell.eff.length; i++){
 			multiplier = getMultiplier(spell.eff[i].type);
 			val = spell.eff[i].val;
 			if (val)
-				base += val[val.length-1] * multiplier;
+				spell.base += val[val.length-1] * multiplier;
 		}
 
+		// Add ap and ad ratio calculations
+		spell.base += $scope.ad * spell.ad + ($scope.ad-100) * spell.bonusAd + $scope.ap * spell.ap;
+
+		// Calculate score modifier for range
 		spell.rangeMod = 1 
 		if (range > 2000)
 			range = 2000;
@@ -175,12 +183,14 @@ app.controller('mainController', function($scope, $http, Static){
 			spell.rangeMod *= 1.5
 		}
 
+		// Calculate score modifier for cooldown
 		cd = spell.cooldown;
 		cd = cd[cd.length-1];
 		if (cd < 2.5)
 			cd += 20;
 		spell.cdMod = 3 / Math.log(cd);
 
+		// Calculate score modifier for energy/mana costs
 		cost = spell.cost;
 		cost = cost[cost.length-1];
 		if (cost < 20){
@@ -191,7 +201,6 @@ app.controller('mainController', function($scope, $http, Static){
 			spell.costMod = 3.5 / Math.log(cost);
 		}
 
-		spell.base = base;
 		spell.rating = spell.base * spell.rangeMod * spell.cdMod * spell.costMod;
 	}
 

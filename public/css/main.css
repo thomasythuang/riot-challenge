@@ -18,6 +18,31 @@ body{
 
 .labels{
 	font-weight: bold;
+	font-size: 18px;
+}
+
+.data{
+	margin-top: 10px;
+	display: inline-block;
+}
+
+.icon{
+	height: 24px;
+	width: 24px;
+}
+
+.rating{
+	font-weight: bold;
+}
+
+.sliders input{
+	width: 25em !important;
+	display: inline-block !important;
+	margin-right: 1em;
+}
+.sliders span{
+	font-size: 1em !important;
+	vertical-align: top !important;
 }
 
 /*
