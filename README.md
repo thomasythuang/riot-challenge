@@ -5,7 +5,7 @@ http://topspells.herokuapp.com
 
 Hello! My name is Thomas Huang and I've been a League summoner since Season 3. This is my program to calculate the most efficient spell in League of Legends.
 
-Each spell's efficiency score is based on the following parameters: Base Values, AD/AP Ratios and given AD/AP Values, Spell Costs, Cooldown, and Range. 
+Each spell's efficiency score is based on the following parameters: Base Values, AD/AP Ratios and given AD/AP Values, Spell Costs, Cooldown, and Range. I wanted to use even more parameters in the calculations (e.g. single target vs. AOE, targeted spells vs skillshots, untargetability), but I could not find a way to determine those parameters with the data pulled from the API.
 
 With the default values of AD=200 and AP=200, the most efficient spell in League of Legends is Katarina's ultimate due to its extremely high AP and bonus AD ratios. With 100 AD and 0 AP (the rough equivalent of no items), the most efficient spell is Nunu's Consume because of its very high base damages (albeit only on minions). 
 

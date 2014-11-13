@@ -13,11 +13,9 @@ app.use(express.static(__dirname + '/public')); // set the static files location
 app.use(morgan('dev')); 
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html'); 
-//app.set('view engine', 'ejs');
 app.set('views', __dirname + '/public/views'); 
 
 // routes ======================================================================
-//require('./app/routes.js')(app);
 app.get('/', function(req, res){
 	res.render('index.html');
 });

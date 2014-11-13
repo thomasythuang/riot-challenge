@@ -112,7 +112,7 @@ app.controller('mainController', function($scope, $http, Static){
 		var dmgLabels = ["Damage" , "Damage ", "Bonus Damage", "Base Damage", "Current Health %", "Bonus Magic Damage", "Magic Damage", "Bite Damage", "Percent Maximum Health Damage", "Minimum Damage", "Primary Damage", "True Damage", "Total Damage", "Explosion Damage", "Damage per Second", "Damage Per Second", "Damage per Sec", "Damage dealt per second", "Base Damage per Second", "Max Damage", "Max Health Damage", "Venomous Bite Damage", "Collision Damage", "Maximum Damage", "Passive Damage", "Mark Detonation Damage", "Beam Damage"];
 		var healLabels = ["Heal", "Base Heal", "Health Restored", "Bonus Health"];
 		var shieldLabels = ["Shield Absorption", "Damage Absorption", "Shield Amount", "Shield Health", "Shield Health "];
-		var ccLabels = ["Attack Damage Reduction", "Movement Speed Slow", "Movement Speed Reduction", "Slow", "Slow Amount"];
+		var ccLabels = ["Attack Damage Reduction", "Slow %", "Slow Percent", "Movement Speed Slow", "Movement Speed Reduction", "Slow", "Slow Amount"];
 		var allLabels = [dmgLabels, healLabels, shieldLabels, ccLabels];
 		var label = spell.leveltip.label;
 		var index = -1;
@@ -208,18 +208,19 @@ app.controller('mainController', function($scope, $http, Static){
 		spell.rating = spell.base * spell.rangeMod * spell.cdMod * spell.costMod;
 	}
 
+	// Multipliers for different effects of spells
 	function getMultiplier(n){
 		switch (n){
-			case 0:
+			case 0: 	// Damage
 				return 1;
 				break;
-			case 1: 
+			case 1: 	// Heal
 				return 1.5;
 				break;
-			case 2:
+			case 2: 	// Shield
 				return 0.8;
 				break;
-			case 3: 
+			case 3:  	// CC
 				return 1;
 				break;
 			default:
@@ -239,9 +240,5 @@ app.controller('mainController', function($scope, $http, Static){
 		$scope.inProgress = false;
 		$scope.done = true;
 	}
-
-	$scope.test = function(spell){
-		console.log(spell);
-	};
 
 });
